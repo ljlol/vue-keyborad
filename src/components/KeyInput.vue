@@ -28,6 +28,8 @@ export default {
       }else{
         this.inputValue += val
       }
+
+      this.setCursorPosition()
     },
     onFocus() {
       this.$set(this.option, 'show', true)
@@ -39,12 +41,15 @@ export default {
       if (doc.selectionStart) return doc.selectionStart
       return -1
     },
-    //设置光标位置 暂未实现
-    setCursorPosition(pos) {
+    //设置光标位置 已实现
+    setCursorPosition() {
       let doc = this.$refs['keyboard']
-      console.log(doc.setSelectionRange)
-      doc.focus()
-      doc.setSelectionRange(1,3)
+   
+      setTimeout(()=>{
+            doc.setSelectionRange(doc.value.length,doc.value.length)
+            doc.focus()
+      },50)
+      
     }
   }
 }

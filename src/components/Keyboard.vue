@@ -1,14 +1,15 @@
 <template>
   <div class="keyboard" v-show="showKeyboard" v-clickoutside="closeModal">
-    <p v-for="keys in keyList">
+    <p v-for="keys in keyList" :class="{'number':status == 2}">
       <template v-for="key in keys">
         <i v-if="key === 'top'" @click.stop="clickKey" @touchend.stop="clickKey" class="iconfont icon-zhiding tab-top"></i>
         <i v-else-if="key === '123'" @click.stop="clickKey" @touchend.stop="clickKey" class="tab-num">123</i>
         <i v-else-if="key === 'del'" @click.stop="clickKey" @touchend.stop="clickKey" class="iconfont icon-delete key-delete"></i>
-        <i v-else-if="key === 'blank'" @click.stop="clickKey" @touchend.stop="clickKey" class="iconfont icon-konggejian-jianpanyong tab-blank"></i>
+        <i v-else-if="key === 'blank'" @click.stop="clickKey" @touchend.stop="clickKey" class="iconfont tab-blank">space</i>
         <i v-else-if="key === 'symbol'" @click.stop="clickKey" @touchend.stop="clickKey" class="tab-symbol">符</i>
         <i v-else-if="key === 'point'" @click.stop="clickKey" @touchend.stop="clickKey" class="tab-point">·</i>
         <i v-else-if="key === 'enter'" @click.stop="clickKey" @touchend.stop="clickKey" class="iconfont icon-huiche tab-enter"></i>
+        <i v-else-if="key === 'abc'" @click.stop="clickKey" @touchend.stop="clickKey" class="tab-abc">abc</i>
         <i v-else @click.stop="clickKey" @touchend.stop="clickKey">{{key}}</i>
       </template>
     </p>
@@ -16,7 +17,7 @@
 </template>
 
 <script>
-import clickoutside from '../directives/clickoutside'
+import clickoutside from '../../directives/clickoutside'
 
 export default {
   directives: { clickoutside },
@@ -35,6 +36,18 @@ export default {
         ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
         ['top', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'del'],
         ['123', 'point', 'blank', 'symbol', 'enter']
+      ],
+      numkey:[
+          ['1','2','3'],
+          ['4','5','6'],
+          ['7','8','9'],
+          ['abc','0','del']
+      ],
+      symbolList: [
+        ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+        ['~', '/', ':', ';', '(', ')', '@', '"', "'"],
+        ['%', '-', '_', '#', '?', '!', ',', '...', 'del'],
+        ['abc', 'point', 'blank', '123', 'enter']
       ],
       equip:!!navigator.userAgent.toLocaleLowerCase().match(/ipad|mobile/i)//是否是移动设备
     }
@@ -58,10 +71,12 @@ export default {
     tabHandle({ value = '' }) {
       if(value.indexOf('tab-num') > -1){
          this.status = 2
+         this.keyList = this.numkey
          //数字键盘数据
       }else if(value.indexOf('key-delete') > -1){
         this.emitValue('delete')
-      }else if(value.indexOf('tab-blank') > -1){
+      }else if(value.indexOf('blank') > -1){
+          console.log(123)
         this.emitValue(' ')
       }else if(value.indexOf('tab-enter') > -1){
         this.emitValue('\n')
@@ -69,6 +84,7 @@ export default {
         this.emitValue('.')
       }else if(value.indexOf('tab-symbol') > -1){
         this.status = 3
+        this.keyList = this.symbolList
       }else if(value.indexOf('tab-top') > -1){
         if(this.status === 0){
           this.status = 1
@@ -77,7 +93,16 @@ export default {
           this.status = 0
           this.keyList = this.lowercase
         }
-      }else{
+      }else if(value.indexOf('tab-abc') > -1){
+          if(this.status === 0){
+            this.status = 1
+            this.keyList = this.uppercase
+            }else{
+            this.status = 0
+            this.keyList = this.lowercase
+            }
+      }
+      else{
 
       }
     },
@@ -85,7 +110,7 @@ export default {
     clickKey(event) {
       if(event.type === 'click' && this.equip) return
       let value = event.srcElement.innerText
-      value && value !== '符' && value !== '·' && value !== '123'? this.emitValue(value) : this.tabHandle(event.srcElement.classList)
+      value && value !== '符' &&value !== 'space'&&value !== 'abc' && value !== '·' && value !== '123'? this.emitValue(value) : this.tabHandle(event.srcElement.classList)
     },
 
     emitValue(key) {
@@ -114,7 +139,7 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 999;
+  z-index: 99999;
   pointer-events: auto;
   p {
     width: 95%;
@@ -171,7 +196,7 @@ export default {
       font-size: 12px;
       padding: 0 15px;
       color: #5a5959;
-      line-height: 60px;
+      line-height: 45px;
     }
     .tab-symbol {
       width: 20px;
@@ -184,6 +209,9 @@ export default {
     &:nth-child(2) {
       width: 88%;
     }
+  }
+  .number{
+      width:100%!important;
   }
 }
 </style>
