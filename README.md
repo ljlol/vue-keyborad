@@ -1,8 +1,12 @@
 # vue-keyboard
 
+## 说明
+在原https://github.com/dawnyu/vue-keyborad 进行了优化，光标设置问题修复，增加支持数字、符号键盘
+移动端食用放到最靠近模板的div里
+
 > a keyboard at vue project
 # demo
-![此处输入图片的描述][1]
+略
 
 ## Build Setup
 
